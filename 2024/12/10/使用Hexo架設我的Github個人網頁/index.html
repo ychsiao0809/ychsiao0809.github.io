@@ -177,10 +177,10 @@
 <p>另外還有遇到 submodule 的問題：我原本 hexo 專案底下的 <code>frame</code> 主題是直接用 <code>git clone</code>。我決定將它轉換為 Git submodule 來更好地管理它。我原先的做法是刪除舊的 frame 目錄，然後使用 git submodule add 命令重新添加過來，但後來發現好像只要自己在寫一份 <code>.gitmodules</code> 就可以解決這個問題。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule &quot;myHexo/themes/frame&quot;]</span><br><span class="line">	path = myHexo/themes/frame</span><br><span class="line">	url = https://github.com/zoeingwingkei/frame.git</span><br></pre></td></tr></table></figure>
 
-<ol start="6">
-<li>結語<br>總體來說，這次設置 GitHub Pages 的過程雖然遇到了一些問題，但最終順利完成。這次經歷讓我學會了如何處理 GitHub 的身份驗證、子模塊管理和推送保護規則。</li>
-</ol>
-<p>希望我的經驗能夠幫助到你們，並且鼓勵大家嘗試設置自己的 GitHub 網頁！</p>
+<h2 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h2><p>其實建立 GitHub Pages 比想像中要簡單許多，但還是有遇到一些小問題，有些其實還沒解決，像是在部屬至 GitHub Pages 之後有時候網頁的 css 跟 js 文件會被吃掉，不清楚原因，有些人有提過類似的 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues/2766">issue</a> 但看起來都還沒有解決，我個人是重新 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> 過幾次就解決問題了，至今仍然困惑，希望這輩子都不要再出現問題讓我繼續困惑下去。</p>
+<blockquote>
+<p>1st Rule of Programming: If it works, don’t touch it.</p>
+</blockquote>
 
 </div> 
 
