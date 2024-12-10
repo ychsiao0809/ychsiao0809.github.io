@@ -1,0 +1,3 @@
+[submodule "myHexo/themes/frame"]
+	path = myHexo/themes/frame
+	url = https://github.com/zoeingwingkei/frame.git
