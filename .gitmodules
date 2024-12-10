@@ -1,0 +1,3 @@
+[submodule "themes/frame"]
+	path = themes/frame
+	url = https://github.com/zoeingwingkei/frame.git
