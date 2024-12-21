@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="YC Hsiao">
+
+
+
+
+
+
+
+<title>STA: Static Timing Analysis | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto+Mono&display=swap');
+</style>
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/menu.js"></script>
+    
+
+
+
+
+
+
+
+
+
+
+  <meta name="generator" content="Hexo 7.3.0"></head>
+  <body>
+    <div class="mask-border">
+    </div>
+
+    <div class="wrapper">
+
+      <div class="header">
+  <div class="flex-container">
+    <div class="header-inner">
+      <div class="site-brand-container">
+        <a href="/">
+          
+            YC Space
+          
+        </a>
+      </div>
+      <div id="menu-btn" class="menu-btn" onclick="toggleMenu()">
+        Menu
+      </div>
+      <nav class="site-nav">
+        <ul class="menu-list">
+          
+            
+              <li class="menu-item">
+                <a href="/">Home</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/archives/">Archive</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/categories/gallery/">Gallery</a>
+              </li> 
+                   
+          
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main">
+        <div class="flex-container">
+          <article id="post">
+
+  
+    <div class="post-head">
+    <div class="post-info">
+        <div class="tag-list">
+            
+                
+                    <span class="post-tag">
+                        <a href="/tags/IC-Design/">
+                            IC Design
+                        </a>
+                    </span>    
+                           
+            
+        </div>
+        <div class="post-title">
+            
+            
+                STA: Static Timing Analysis
+            
+            
+        </div>
+        <span class="post-date">
+            Dec 21, 2024
+        </span>
+    </div>
+    <div class="post-img">
+        
+            <div class="h-line-primary"></div>
+              
+    </div>
+</div>
+    <div class="post-content">
+    <p>碩班研究時期曾經有協助學長處理關於 Gate-Level Netlist 的資料，但當時的資料都是已經經過 IC Compiler 的純文本，其中每筆資料的單位為 Path (PI&#x2F;FF -&gt; PO&#x2F;FF)，其中的特徵大致包含 Path 中最小&#x2F;平均&#x2F;最大的 Fan-in&#x2F;Fan-out&#x2F;Power&#x2F;Area 等，以及時序資料。當時其實不清楚這些資料是怎麼產出的，只知道與 STA 有關，趁此機會搞清楚 STA 到底在做甚麼。</p>
+<h2 id="STA-的核心概念"><a href="#STA-的核心概念" class="headerlink" title="STA 的核心概念"></a>STA 的核心概念</h2><ol>
+<li>靜態分析<ul>
+<li>STA 不需要輸入測試向量，而是基於電路結構和時序約束來模擬所有可能的訊號傳輸路徑。</li>
+<li>檢查電路是在所有的訊號條件下滿足<strong>時序約束</strong> (如 SDC: Synopsys Design Constrains)。</li>
+</ul>
+</li>
+<li>關鍵路徑<ul>
+<li>檢查電路中訊號傳輸延遲最長的路徑，該路徑往往決定該電路最大的運行速度。</li>
+</ul>
+</li>
+<li>時序約束<ul>
+<li>定義訊號在電路中傳播所需要滿足的條件，主要分為兩種:<ul>
+<li>Setup Time (建立時間)</li>
+<li>Hold Time (保持時間)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>主要分析對象<ul>
+<li>主要分為四種:<ol>
+<li>Flip-Flop to Flip-Flop</li>
+<li>Flip-Flop to Primary Output</li>
+<li>Primary Input to Primary Output</li>
+<li>Primary Input to Primary Output</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="STA-的主要目標"><a href="#STA-的主要目標" class="headerlink" title="STA 的主要目標"></a>STA 的主要目標</h2><ol>
+<li>確保電路的功能<ul>
+<li>驗證訊號是否能夠在指定的 clock 內正確傳播且穩定的到達輸出。</li>
+</ul>
+</li>
+<li>檢測時序問題<ul>
+<li>Setup Violation: 訊號無法再需要使用的時候底達元件。</li>
+<li>Hold Violation: 訊號無法維持到需要使用的時候。</li>
+</ul>
+</li>
+<li>性能優化<ul>
+<li>提供路徑延遲報告，幫助設計者優化晶片性能。</li>
+</ul>
+</li>
+</ol>
+<h2 id="STA-的基本流程"><a href="#STA-的基本流程" class="headerlink" title="STA 的基本流程"></a>STA 的基本流程</h2><ol>
+<li>輸入電路<ul>
+<li>輸入 Gate-Level Netlist</li>
+<li>包括所有 Gate 之間的連接關係。</li>
+</ul>
+</li>
+<li>時序約束檔案 (SDC)<ul>
+<li>定義電路的時序條件，如:<ul>
+<li>時鐘週期 (Clock Period)</li>
+<li>訊號到達時間 (Arrival Time)</li>
+<li>輸出要求時間 (Required Time)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>時序分析<ul>
+<li>STA 工具會計算所有路徑的訊號傳播延遲。</li>
+<li>驗證設計是否都符合 SDC。</li>
+</ul>
+</li>
+<li>報告生成<ul>
+<li>生成關鍵路徑報告，以及可能的時序違規 (Violation)。</li>
+</ul>
+</li>
+</ol>
+<h2 id="STA-在-IC-設計中的階段"><a href="#STA-在-IC-設計中的階段" class="headerlink" title="STA 在 IC 設計中的階段"></a>STA 在 IC 設計中的階段</h2><p>前端設計階段</p>
+<ul>
+<li>執行階段: 在 RTL 設計完成後，經過邏輯合成 (Synthsis) 生成 Gate-Level Netlist 時。</li>
+<li>目的<ul>
+<li>驗證是否符合 SDC 規範 (Setup time 及 Hold time)。</li>
+<li>確保 Synthesis Tool 產生的電路能在指定的 Clock Period 下運作。</li>
+</ul>
+</li>
+<li>輸入<ul>
+<li>Gate-Level Netlist</li>
+<li>SDC</li>
+</ul>
+</li>
+<li>工具<ul>
+<li>Synopsys PrimeTime、Cadence Tempus 等。<br>後端設計階段</li>
+</ul>
+</li>
+<li>執行階段<ul>
+<li>標準單元放置後 (Placement)</li>
+<li>時脈樹生成後 (Clock Tree Synthesis)</li>
+<li>佈線後 (Routing)</li>
+</ul>
+</li>
+<li>目的<ul>
+<li>驗證實際物理設計滿足時序需求。</li>
+<li>確保實際的佈局設計 (包含導線延遲和負載)不會導致時序違規。</li>
+</ul>
+</li>
+<li>工具<ul>
+<li>Cadence Innovus、Synopsys ICC2 等工具內建的 STA 模組，或與專用的 STA 工具配合使用。<br>設計完成階段 (Tape-Out 前最終確認)</li>
+</ul>
+</li>
+<li>執行階段: 物理設計完成後 (GDSII 生成之前)</li>
+<li>目的<ul>
+<li>確認所有 Violation 都解決。</li>
+<li>檢查邏輯設計與物理設計的一致性。</li>
+</ul>
+</li>
+</ul>
+<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><ul>
+<li>一般 SDC 檔案是上游還是下游提供</li>
+<li>為何 STA 分析對象是這些</li>
+<li>FLip-Flop</li>
+<li>CTS 跟 routing 的差別</li>
+</ul>
+
+</div> 
+
+<script>
+    window.onload = detectors();
+</script>
+    <div class="post-footer">
+    <div class="h-line-primary"></div>
+    <nav class="post-nav">
+        <div class="prev-item">
+           
+        </div>
+        <div class="next-item">
+            
+                <div class="icon arrow-right"></div>
+                <div class="post-link">
+                  <a href="/2024/12/10/%E4%BD%BF%E7%94%A8Hexo%E6%9E%B6%E8%A8%AD%E6%88%91%E7%9A%84Github%E5%80%8B%E4%BA%BA%E7%B6%B2%E9%A0%81/">Next</a>  
+                </div>  
+            
+        </div>
+    </nav>
+</div>
+
+    
+      <div class="post-comment">
+
+     
+
+     
+    
+    
+
+</div>
+     
+  
+</article>
+        </div>
+      </div>
+      
+      <div class="footer">
+    <div class="flex-container">
+        <div class="footer-text">
+            
+            
+            
+                Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a target="_blank" rel="noopener" href="https://github.com/zoeingwingkei/frame/">Frame</a>
+                
+        </div>
+    </div>
+</div>
+
+    </div>
+
+    
+    
+
+  </body>
+</html>
