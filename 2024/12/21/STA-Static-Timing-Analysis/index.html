@@ -151,32 +151,25 @@
 </ul>
 </li>
 </ol>
-<h2 id="STA-的核心概念"><a href="#STA-的核心概念" class="headerlink" title="STA 的核心概念"></a>STA 的核心概念</h2><ol>
-<li>靜態分析 (Static Analysis)<ul>
+<h2 id="STA-的核心概念"><a href="#STA-的核心概念" class="headerlink" title="STA 的核心概念"></a>STA 的核心概念</h2><h4 id="1-靜態分析-Static-Analysis"><a href="#1-靜態分析-Static-Analysis" class="headerlink" title="1. 靜態分析 (Static Analysis)"></a>1. 靜態分析 (Static Analysis)</h4><ul>
 <li>STA 不需要輸入測試向量，而是基於<strong>電路結構</strong>和<strong>時序約束</strong>來模擬所有可能的訊號傳輸路徑。</li>
 <li>檢查電路是在所有的訊號條件下滿足<strong>時序約束</strong> (如 SDC: Synopsys Design Constrains)。</li>
 </ul>
-</li>
-<li>關鍵路徑 (Critical Path)<ul>
+<h4 id="2-關鍵路徑-Critical-Path"><a href="#2-關鍵路徑-Critical-Path" class="headerlink" title="2. 關鍵路徑 (Critical Path)"></a>2. 關鍵路徑 (Critical Path)</h4><ul>
 <li>檢查電路中訊號傳輸延遲最長的路徑，該路徑往往決定該電路最大的運行速度。</li>
 </ul>
-</li>
-<li>時序約束 (Time Constrain)<ul>
+<h4 id="3-時序約束-Time-Constrain"><a href="#3-時序約束-Time-Constrain" class="headerlink" title="3. 時序約束 (Time Constrain)"></a>3. 時序約束 (Time Constrain)</h4><ul>
 <li>定義訊號在電路中傳播所需要滿足的條件，主要分為兩種:<ul>
 <li>Setup Time (建立時間)</li>
-<li>Hold Time (保持時間)    -</li>
+<li>Hold Time (保持時間)</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>主要分析對象<ol>
-<li>Flip-Flop to Flip-Flop</li>
-<li>Flip-Flop to Primary Output</li>
-<li>Primary Input to Primary Output</li>
-<li>Primary Input to Primary Output</li>
-</ol>
-</li>
-</ol>
+<h4 id="4-主要分析對象"><a href="#4-主要分析對象" class="headerlink" title="4. 主要分析對象"></a>4. 主要分析對象</h4><pre><code>1. Flip-Flop to Flip-Flop
+2. Flip-Flop to Primary Output
+3. Primary Input to Primary Output
+4. Primary Input to Primary Output
+</code></pre>
 <h2 id="STA-的基本流程"><a href="#STA-的基本流程" class="headerlink" title="STA 的基本流程"></a>STA 的基本流程</h2><ol>
 <li>輸入電路<ul>
 <li>輸入 Gate-Level Netlist</li>
