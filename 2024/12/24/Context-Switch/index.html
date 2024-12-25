@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="YC Hsiao">
+
+
+
+
+
+
+
+<title>Context Switch | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto+Mono&display=swap');
+</style>
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/menu.js"></script>
+    
+
+
+
+
+
+
+
+
+
+
+  <meta name="generator" content="Hexo 7.3.0"></head>
+  <body>
+    <div class="mask-border">
+    </div>
+
+    <div class="wrapper">
+
+      <div class="header">
+  <div class="flex-container">
+    <div class="header-inner">
+      <div class="site-brand-container">
+        <a href="/">
+          
+            YC Space
+          
+        </a>
+      </div>
+      <div id="menu-btn" class="menu-btn" onclick="toggleMenu()">
+        Menu
+      </div>
+      <nav class="site-nav">
+        <ul class="menu-list">
+          
+            
+              <li class="menu-item">
+                <a href="/">Home</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/archives/">Archive</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/categories/gallery/">Gallery</a>
+              </li> 
+                   
+          
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main">
+        <div class="flex-container">
+          <article id="post">
+
+  
+    <div class="post-head">
+    <div class="post-info">
+        <div class="tag-list">
+            
+                
+                    <span class="post-tag">
+                        <a href="/tags/OS/">
+                            OS
+                        </a>
+                    </span>    
+                           
+            
+        </div>
+        <div class="post-title">
+            
+            
+                Context Switch
+            
+            
+        </div>
+        <span class="post-date">
+            Dec 24, 2024
+        </span>
+    </div>
+    <div class="post-img">
+        
+            <div class="h-line-primary"></div>
+              
+    </div>
+</div>
+    <div class="post-content">
+    <h2 id="為什麼會需要-Context-Switch"><a href="#為什麼會需要-Context-Switch" class="headerlink" title="為什麼會需要 Context Switch"></a>為什麼會需要 Context Switch</h2><p>當我們的 Process 因為一些特定原因中斷時，需要將現有的運行狀態儲存起來，以便後續解決中斷後回到原本的 Process 狀態繼續執行。</p>
+<h2 id="當發生-Context-Switch-時，CPU-會做什麼"><a href="#當發生-Context-Switch-時，CPU-會做什麼" class="headerlink" title="當發生 Context Switch 時，CPU 會做什麼"></a>當發生 Context Switch 時，CPU 會做什麼</h2><ol>
+<li>保存當前程序的上下文，並將當前程序的資料存入 PCB (Process Control Block) 中。</li>
+<li>PCB 存入的資料包含:<ul>
+<li>程序 ID (PID)</li>
+<li>程序優先級 (Priority)</li>
+<li>處理器使用時間</li>
+<li>記憶體分配 (包含地址範圍、共享內存、堆、全局變數)</li>
+<li>打開的文件描述符表 (File Descriptor Table)</li>
+<li>訊號處理 (signal handler) 資訊</li>
+<li>Thread 的列表或索引</li>
+<li>指向Thread  (Thread) 的 TCB 表 (如果有的話)</li>
+</ul>
+</li>
+</ol>
+<h2 id="PCB-的結構"><a href="#PCB-的結構" class="headerlink" title="PCB 的結構"></a>PCB 的結構</h2><p>以下是 PCB 通常包含的詳細資訊：</p>
+<h4 id="1-程序標識資訊"><a href="#1-程序標識資訊" class="headerlink" title="1. 程序標識資訊"></a>1. 程序標識資訊</h4><ul>
+<li>程序 ID（Process ID, PID）：程序的唯一標識。</li>
+<li>父程序 ID（Parent Process ID, PPID）：創建該程序的父程序的 ID。</li>
+<li>用戶 ID（User ID, UID）與群組 ID（Group ID, GID）：程序所有者的身份資訊。</li>
+</ul>
+<h4 id="2-程序狀態資訊"><a href="#2-程序狀態資訊" class="headerlink" title="2. 程序狀態資訊"></a>2. 程序狀態資訊</h4><ul>
+<li>程序狀態：如正在執行（Running）、就緒（Ready）、等待（Waiting）等。</li>
+<li>程序計數器（Program Counter, PC）：記錄程序的下一條指令地址。</li>
+<li>寄存器內容：保存程序暫停時處理器的寄存器狀態。</li>
+</ul>
+<h4 id="3-記憶體管理資訊"><a href="#3-記憶體管理資訊" class="headerlink" title="3. 記憶體管理資訊"></a>3. 記憶體管理資訊</h4><ul>
+<li>程序代碼段位置：代碼段的起始地址與大小。</li>
+<li>Stack 位置：Stack 區域的起始地址與大小。</li>
+<li>Heap 資訊：動態分配的記憶體區域的地址範圍。</li>
+<li>頁表或段表：程序的虛擬記憶體與實體記憶體的映射。</li>
+</ul>
+<h4 id="4-CPU-調度資訊"><a href="#4-CPU-調度資訊" class="headerlink" title="4. CPU 調度資訊"></a>4. CPU 調度資訊</h4><ul>
+<li>程序優先級（Priority）：程序的優先執行順序。</li>
+<li>CPU 時間片（Time Slice）：分配給程序的 CPU 時間。</li>
+<li>調度隊列指標：程序在調度隊列中的位置。</li>
+<li>執行時間：程序執行所需的時間資訊。</li>
+</ul>
+<h4 id="5-I-O-資源資訊"><a href="#5-I-O-資源資訊" class="headerlink" title="5. I&#x2F;O 資源資訊"></a>5. I&#x2F;O 資源資訊</h4><ul>
+<li>打開的文件描述符表：列出程序當前打開的文件或設備。</li>
+<li>I&#x2F;O 緩衝區資訊：I&#x2F;O 操作使用的緩衝區。</li>
+<li>設備分配資訊：程序占用的硬體設備（如硬碟、網卡等）。</li>
+</ul>
+<h4 id="6-程序間通訊（Inter-Process-Communication，IPC）資訊"><a href="#6-程序間通訊（Inter-Process-Communication，IPC）資訊" class="headerlink" title="6. 程序間通訊（Inter-Process Communication，IPC）資訊"></a>6. 程序間通訊（Inter-Process Communication，IPC）資訊</h4><ul>
+<li>訊號處理表：記錄程序可以接收和處理的訊號類型。</li>
+<li>消息隊列：與其他程序的消息傳遞機制。</li>
+<li>共享記憶體段：程序間共享記憶體的地址範圍。</li>
+</ul>
+<h4 id="7-Thread-資訊（如果是多-Thread-程序）"><a href="#7-Thread-資訊（如果是多-Thread-程序）" class="headerlink" title="7. Thread 資訊（如果是多 Thread 程序）"></a>7. Thread 資訊（如果是多 Thread 程序）</h4><ul>
+<li>Thread 列表或指針：指向該程序中所有 Thread Control Block（TCB）。</li>
+<li>Thread 同步資訊：如鎖（mutex）、信號量（semaphore）等。</li>
+</ul>
+<h4 id="8-額外資訊（可選）"><a href="#8-額外資訊（可選）" class="headerlink" title="8. 額外資訊（可選）"></a>8. 額外資訊（可選）</h4><ul>
+<li>程序建立時間：程序被創建的時間戳。</li>
+<li>系統資源使用記錄：CPU 時間、記憶體使用量、I&#x2F;O 次數等。</li>
+<li>安全資訊：訪問控制列表（Access Control List, ACL）、安全令牌等。</li>
+</ul>
+<h2 id="When"><a href="#When" class="headerlink" title="When"></a>When</h2><h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2>
+</div> 
+
+<script>
+    window.onload = detectors();
+</script>
+    <div class="post-footer">
+    <div class="h-line-primary"></div>
+    <nav class="post-nav">
+        <div class="prev-item">
+           
+        </div>
+        <div class="next-item">
+            
+                <div class="icon arrow-right"></div>
+                <div class="post-link">
+                  <a href="/2024/12/22/Setup-Time-%E8%88%87-Hold-Time/">Next</a>  
+                </div>  
+            
+        </div>
+    </nav>
+</div>
+
+    
+      <div class="post-comment">
+
+     
+
+     
+    
+    
+
+</div>
+     
+  
+</article>
+        </div>
+      </div>
+      
+      <div class="footer">
+    <div class="flex-container">
+        <div class="footer-text">
+            
+            
+            
+                Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a target="_blank" rel="noopener" href="https://github.com/zoeingwingkei/frame/">Frame</a>
+                
+        </div>
+    </div>
+</div>
+
+    </div>
+
+    
+    
+
+  </body>
+</html>

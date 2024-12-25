@@ -136,35 +136,6 @@
 </div>
     <div class="post-content">
     <p>碩班研究時期曾經有協助學長處理關於 Gate-Level Netlist 的資料，但當時的資料都是已經經過 IC Compiler 的純文本，其中每筆資料的單位為 Path (PI&#x2F;FF -&gt; PO&#x2F;FF)，其中的特徵大致包含 Path 中最小&#x2F;平均&#x2F;最大的 Fan-in&#x2F;Fan-out&#x2F;Power&#x2F;Area 等，以及時序資料。當時其實不清楚這些資料是怎麼產出的，只知道與 STA 有關，趁此機會搞清楚 STA 到底在做甚麼。</p>
-<h2 id="STA-的核心概念"><a href="#STA-的核心概念" class="headerlink" title="STA 的核心概念"></a>STA 的核心概念</h2><ol>
-<li>靜態分析<ul>
-<li>STA 不需要輸入測試向量，而是基於電路結構和時序約束來模擬所有可能的訊號傳輸路徑。</li>
-<li>檢查電路是在所有的訊號條件下滿足<strong>時序約束</strong> (如 SDC: Synopsys Design Constrains)。</li>
-</ul>
-</li>
-<li>關鍵路徑<ul>
-<li>檢查電路中訊號傳輸延遲最長的路徑，該路徑往往決定該電路最大的運行速度。</li>
-</ul>
-</li>
-<li>時序約束<ul>
-<li>定義訊號在電路中傳播所需要滿足的條件，主要分為兩種:<ul>
-<li>Setup Time (建立時間)</li>
-<li>Hold Time (保持時間)</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>主要分析對象<ul>
-<li>主要分為四種:<ol>
-<li>Flip-Flop to Flip-Flop</li>
-<li>Flip-Flop to Primary Output</li>
-<li>Primary Input to Primary Output</li>
-<li>Primary Input to Primary Output</li>
-</ol>
-</li>
-</ul>
-</li>
-</ol>
 <h2 id="STA-的主要目標"><a href="#STA-的主要目標" class="headerlink" title="STA 的主要目標"></a>STA 的主要目標</h2><ol>
 <li>確保電路的功能<ul>
 <li>驗證訊號是否能夠在指定的 clock 內正確傳播且穩定的到達輸出。</li>
@@ -178,6 +149,32 @@
 <li>性能優化<ul>
 <li>提供路徑延遲報告，幫助設計者優化晶片性能。</li>
 </ul>
+</li>
+</ol>
+<h2 id="STA-的核心概念"><a href="#STA-的核心概念" class="headerlink" title="STA 的核心概念"></a>STA 的核心概念</h2><ol>
+<li>靜態分析 (Static Analysis)<ul>
+<li>STA 不需要輸入測試向量，而是基於<strong>電路結構</strong>和<strong>時序約束</strong>來模擬所有可能的訊號傳輸路徑。</li>
+<li>檢查電路是在所有的訊號條件下滿足<strong>時序約束</strong> (如 SDC: Synopsys Design Constrains)。</li>
+</ul>
+</li>
+<li>關鍵路徑 (Critical Path)<ul>
+<li>檢查電路中訊號傳輸延遲最長的路徑，該路徑往往決定該電路最大的運行速度。</li>
+</ul>
+</li>
+<li>時序約束 (Time Constrain)<ul>
+<li>定義訊號在電路中傳播所需要滿足的條件，主要分為兩種:<ul>
+<li>Setup Time (建立時間)</li>
+<li>Hold Time (保持時間)    -</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>主要分析對象<ol>
+<li>Flip-Flop to Flip-Flop</li>
+<li>Flip-Flop to Primary Output</li>
+<li>Primary Input to Primary Output</li>
+<li>Primary Input to Primary Output</li>
+</ol>
 </li>
 </ol>
 <h2 id="STA-的基本流程"><a href="#STA-的基本流程" class="headerlink" title="STA 的基本流程"></a>STA 的基本流程</h2><ol>
@@ -205,49 +202,47 @@
 </ul>
 </li>
 </ol>
-<h2 id="STA-在-IC-設計中的階段"><a href="#STA-在-IC-設計中的階段" class="headerlink" title="STA 在 IC 設計中的階段"></a>STA 在 IC 設計中的階段</h2><p>前端設計階段</p>
-<ul>
-<li>執行階段: 在 RTL 設計完成後，經過邏輯合成 (Synthsis) 生成 Gate-Level Netlist 時。</li>
-<li>目的<ul>
-<li>驗證是否符合 SDC 規範 (Setup time 及 Hold time)。</li>
-<li>確保 Synthesis Tool 產生的電路能在指定的 Clock Period 下運作。</li>
-</ul>
-</li>
-<li>輸入<ul>
-<li>Gate-Level Netlist</li>
-<li>SDC</li>
-</ul>
-</li>
-<li>工具<ul>
-<li>Synopsys PrimeTime、Cadence Tempus 等。<br>後端設計階段</li>
-</ul>
-</li>
-<li>執行階段<ul>
-<li>標準單元放置後 (Placement)</li>
-<li>時脈樹生成後 (Clock Tree Synthesis)</li>
-<li>佈線後 (Routing)</li>
-</ul>
-</li>
-<li>目的<ul>
-<li>驗證實際物理設計滿足時序需求。</li>
-<li>確保實際的佈局設計 (包含導線延遲和負載)不會導致時序違規。</li>
-</ul>
-</li>
-<li>工具<ul>
-<li>Cadence Innovus、Synopsys ICC2 等工具內建的 STA 模組，或與專用的 STA 工具配合使用。<br>設計完成階段 (Tape-Out 前最終確認)</li>
-</ul>
-</li>
-<li>執行階段: 物理設計完成後 (GDSII 生成之前)</li>
-<li>目的<ul>
-<li>確認所有 Violation 都解決。</li>
-<li>檢查邏輯設計與物理設計的一致性。</li>
-</ul>
-</li>
-</ul>
+<h2 id="IC-設計中不同的-STA-階段"><a href="#IC-設計中不同的-STA-階段" class="headerlink" title="IC 設計中不同的 STA 階段"></a>IC 設計中不同的 STA 階段</h2><table>
+<thead>
+<tr>
+<th>階段</th>
+<th>目標</th>
+<th>輸入資料</th>
+<th>分析重點</th>
+<th>分析工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Netlist STA (前端)</td>
+<td>確保綜合後的邏輯設計滿足時序需求。</td>
+<td>- Netlist after synthesis <br> - SDC 時序約束 <br> - Cell Library (.lib) <br> - Wireload Model <br> - PVT(Process、Voltage、Temperature) Corner <br> - Clock Uncertainty (Skew or Jitter)</td>
+<td>- Setup&#x2F;Hold 驗證 <br> - 關鍵路徑分析 <br> - 多時鐘域交互 (CDC) 驗證 <br> - False Path &amp; Multi-cycle Path 檢查</td>
+<td>Synopsys PrimeTime、Cadence Tempus</td>
+</tr>
+<tr>
+<td>Placement STA (後端)</td>
+<td>驗證元件放置後的邏輯結構時序是否受到影響。</td>
+<td>- Netlist after synthesis <br> - 初步放置結果（元件物理位置） <br> - SDC 時序約束 <br> - Cell Library (.lib) <br> - 初步 Clock Tree 模型 <br> - 初步 Wireload 或 RC 模型</td>
+<td>- 初步實體設計的時序驗證 <br> - 關鍵路徑是否受放置影響 <br> - 時鐘樹初步偏移檢查 <br> - 緩衝器插入對時序的影響</td>
+<td>Cadence Innovus、Synopsys ICC2</td>
+</tr>
+<tr>
+<td>Post-Route STA (後端)</td>
+<td>精確分析考慮實際 RC 延遲的電路時序。</td>
+<td>- 路由完成的 Netlist <br> - 精確的 RC 模型 (SPEF) <br> - 完整的時鐘樹實現 (CTS 結果) <br> - Updated SDC 約束 <br> - PVT 角落條件 <br> - Clock Uncertainty</td>
+<td>- 實際路由對時序的影響 <br> - RC 提取對 Setup&#x2F;Hold 的影響 <br> - 高 RC 延遲路徑的調整 <br> - 多角落&#x2F;多模式分析</td>
+<td>Cadence Innovus、Synopsys ICC2</td>
+</tr>
+<tr>
+<td>Sign-Off STA (後端)</td>
+<td>確保設計在所有條件下滿足製造要求並通過驗證。</td>
+<td>- 最終 Netlist <br> - 完整的 RC 提取模型 (SPEF) <br> - 製程角落庫 (.lib, OCV&#x2F;Aging Effects) <br> - 最終 SDC 約束 <br> - 不同角落條件（SS, TT, FF 等）</td>
+<td>- Setup&#x2F;Hold 驗證的最終檢查 <br> - 多角落（PVT）、多模式的全覆蓋分析 <br> - 設計是否滿足所有時序要求 <br> - 設計是否可以投入製造</td>
+<td>Cadence Innovus、Synopsys ICC2</td>
+</tr>
+</tbody></table>
 <h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><ul>
-<li>一般 SDC 檔案是上游還是下游提供</li>
-<li>為何 STA 分析對象是這些</li>
-<li>FLip-Flop</li>
+<li><h2 id="一般-SDC-檔案是上游還是下游提供"><a href="#一般-SDC-檔案是上游還是下游提供" class="headerlink" title="一般 SDC 檔案是上游還是下游提供?"></a>一般 SDC 檔案是上游還是下游提供?</h2></li>
 <li>CTS 跟 routing 的差別</li>
 </ul>
 
@@ -261,6 +256,11 @@
     <nav class="post-nav">
         <div class="prev-item">
            
+                <div class="icon arrow-left"></div>
+                <div class="post-link">
+                    <a href="/2024/12/22/Setup-Time-%E8%88%87-Hold-Time/">Prev</a>
+                </div>
+            
         </div>
         <div class="next-item">
             
